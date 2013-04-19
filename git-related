@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # This script finds people that might be interested in a patch
-# usage: git related <file>
+# usage: git related <files>
 
 $since = '5-years-ago'
 $min_percent = 10
@@ -40,6 +40,7 @@ class Commits
 
   def initialize
     @items = {}
+    @main_commits = {}
   end
 
   def size
@@ -75,23 +76,27 @@ class Commits
       p.each do |line|
         if line =~ /^\h{40}/
           id = $&
-          @items[id] ||= Commit.new(id)
+          @items[id] ||= Commit.new(id) if not @main_commits.include?(id)
         end
       end
     end
   end
 
-  def from_patch(file)
-    from = source = nil
-    File.open(file) do |f|
-      f.each do |line|
-        case line
-        when /^From (\h+) (.+)$/
-          from = $1
-        when /^---\s+(\S+)/
-          source = $1 != '/dev/null' ? $1[2..-1] : nil
-        when /^@@ -(\d+)(?:,(\d+))?/
-          get_blame(source, $1, $2, from) if source and from
+  def from_patches(files)
+    source = nil
+    files.each do |file|
+      from = nil
+      File.open(file) do |f|
+        f.each do |line|
+          case line
+          when /^From (\h+) (.+)$/
+            from = $1
+            @main_commits[from] = true
+          when /^---\s+(\S+)/
+            source = $1 != '/dev/null' ? $1[2..-1] : nil
+          when /^@@ -(\d+)(?:,(\d+))?/
+            get_blame(source, $1, $2, from) if source and from
+          end
         end
       end
     end
@@ -99,10 +104,8 @@ class Commits
 
 end
 
-exit 1 if ARGV.size != 1
-
 commits = Commits.new
-commits.from_patch(ARGV[0])
+commits.from_patches(ARGV)
 commits.import
 
 count_per_person = Hash.new(0)

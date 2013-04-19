@@ -50,4 +50,17 @@ test_expect_success "others" "
 	test_cmp expected actual
 "
 
+test_expect_success "multiple patches" "
+	git format-patch --stdout -1 master > patch1 &&
+	git format-patch --stdout -1 master^ > patch2 &&
+	git related patch1 patch2 | sort > actual &&
+	cat > expected <<-EOF &&
+	John Doe <john@doe.com>
+	John Poppins <john@doe.com>
+	Jon Stewart <jon@stewart.com>
+	Pablo Escobar <pablo@escobar.com>
+	EOF
+	test_cmp expected actual
+"
+
 test_done
