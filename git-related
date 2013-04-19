@@ -108,6 +108,21 @@ class Commits
   end
 
   def from_rev_args(args)
+    revs = []
+
+    File.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).each do |rev|
+      revs << rev.chomp
+    end
+
+    case revs.size
+    when 1
+      r = revs[0]
+      r = '^' + r if r[0] != '-'
+      args = [ r, 'HEAD' ]
+    else
+      args = revs
+    end
+
     File.popen(%w[git rev-list --reverse] + args) do |p|
       p.each do |e|
         id = e.chomp

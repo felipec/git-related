@@ -73,4 +73,14 @@ test_expect_success "from committish" "
 	test_cmp expected actual
 "
 
+test_expect_success "from single rev committish" "
+	git related -1 master | sort > actual &&
+	cat > expected <<-EOF &&
+	John Doe <john@doe.com>
+	John Poppins <john@doe.com>
+	Jon Stewart <jon@stewart.com>
+	EOF
+	test_cmp expected actual
+"
+
 test_done
