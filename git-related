@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 
 # This script finds people that might be interested in a patch
-# usage: git related <files>
+# usage: git related <files | rev-list options>
 
 $since = '5-years-ago'
 $min_percent = 10
+$files = []
+$rev_args = []
 
 class Commit
 
@@ -82,21 +84,36 @@ class Commits
     end
   end
 
-  def from_patches(files)
+  def scan_patch(f, id = nil)
     source = nil
+    f.each do |line|
+      case line
+      when /^From (\h+) (.+)$/
+        id = $1
+        @main_commits[id] = true
+      when /^---\s+(\S+)/
+        source = $1 != '/dev/null' ? $1[2..-1] : nil
+      when /^@@ -(\d+)(?:,(\d+))?/
+        get_blame(source, $1, $2, id) if source and id
+      end
+    end
+  end
+
+  def from_patches(files)
     files.each do |file|
-      from = nil
       File.open(file) do |f|
-        f.each do |line|
-          case line
-          when /^From (\h+) (.+)$/
-            from = $1
-            @main_commits[from] = true
-          when /^---\s+(\S+)/
-            source = $1 != '/dev/null' ? $1[2..-1] : nil
-          when /^@@ -(\d+)(?:,(\d+))?/
-            get_blame(source, $1, $2, from) if source and from
-          end
+        scan_patch(f)
+      end
+    end
+  end
+
+  def from_rev_args(args)
+    File.popen(%w[git rev-list --reverse] + args) do |p|
+      p.each do |e|
+        id = e.chomp
+        @main_commits[id] = true
+        File.popen(%w[git show -C --oneline] + [id]) do |p|
+          scan_patch(p, id)
         end
       end
     end
@@ -104,8 +121,20 @@ class Commits
 
 end
 
+ARGV.each do |e|
+  if File.exists?(e)
+    $files << e
+  else
+    $rev_args << e
+  end
+end
+
 commits = Commits.new
-commits.from_patches(ARGV)
+if $files.empty?
+  commits.from_rev_args($rev_args)
+else
+  commits.from_patches($files)
+end
 commits.import
 
 count_per_person = Hash.new(0)
