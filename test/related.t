@@ -93,4 +93,14 @@ test_expect_success "mailmap" "
 	test_cmp expected actual
 "
 
+test_expect_success "commits" "
+	git related -craw -1 master | git log --format='%s' --no-walk --stdin > actual &&
+	cat > expected <<-EOF &&
+	four
+	three
+	one
+	EOF
+	test_cmp expected actual
+"
+
 test_done

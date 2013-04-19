@@ -7,6 +7,7 @@ $since = '5-years-ago'
 $min_percent = 10
 $files = []
 $rev_args = []
+$show_commits = false
 
 $mailmaps = {}
 $mailmaps_complex = {}
@@ -128,6 +129,10 @@ opts.on('d', 'since', help: 'How far back to search for relevant commits') do |v
   $since = v
 end
 
+opts.on('c', 'commits', help: 'List commits instead of persons') do |v|
+  $show_commits = v
+end
+
 opts.parse
 
 class Person
@@ -238,6 +243,10 @@ class Commits
     @items.each(&block)
   end
 
+  def list
+    @items.keys
+  end
+
   def import
     return if @items.empty?
     File.popen(%w[git cat-file --batch], 'r+') do |p|
@@ -338,6 +347,20 @@ else
   commits.from_patches($files)
 end
 commits.import
+
+if $show_commits
+  cmd = nil
+  case $show_commits
+  when 'raw'
+    puts commits.list
+  when 'full'
+    cmd = %w[git log --patch --no-walk]
+  else
+    cmd = %w[git log --oneline --no-walk]
+  end
+  system(*cmd + commits.list) if cmd
+  exit 0
+end
 
 persons = Persons.new
 
