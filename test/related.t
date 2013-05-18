@@ -79,4 +79,18 @@ test_expect_success "from single rev committish" "
 	test_cmp expected actual
 "
 
+test_expect_success "mailmap" "
+	test_when_finished 'rm -rf .mailmap' &&
+	cat > .mailmap <<-EOF &&
+	Jon McAvoy <jon@stewart.com>
+	John Poppins <john@poppins.com> <john@doe.com>
+	EOF
+	git related -1 master | sort > actual &&
+	cat > expected <<-EOF &&
+	John Poppins <john@poppins.com> (author: 66%)
+	Jon McAvoy <jon@stewart.com> (reviewer: 33%, author: 33%)
+	EOF
+	test_cmp expected actual
+"
+
 test_done
