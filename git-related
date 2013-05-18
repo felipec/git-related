@@ -8,6 +8,10 @@ $min_percent = 10
 $files = []
 $rev_args = []
 
+git_dir = %x[git rev-parse --git-dir].chomp
+$base_dir = File.dirname(git_dir)
+$cur_dir = Dir.pwd
+
 KNOWN_ROLES = {
   'Signed-off-by' => :signer,
   'Reviewed-by' => :reviewer,
@@ -130,6 +134,7 @@ class Commits
   def get_blame(source, start, len, from)
     return if len == 0
     len ||= 1
+    Dir.chdir($base_dir)
     File.popen(['git', 'blame', '--incremental', '-C', '-C',
                '-L', '%u,+%u' % [start, len],
                '--since', $since, from + '^',
@@ -141,6 +146,7 @@ class Commits
         end
       end
     end
+    Dir.chdir($cur_dir)
   end
 
   def scan_patch(f, id = nil)
