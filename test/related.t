@@ -45,7 +45,7 @@ test_expect_success "others" "
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 33%)
-	Jon Stewart <jon@stewart.com> (signer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -57,7 +57,7 @@ test_expect_success "multiple patches" "
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 25%)
 	John Poppins <john@doe.com> (author: 25%)
-	Jon Stewart <jon@stewart.com> (signer: 25%, author: 25%)
+	Jon Stewart <jon@stewart.com> (reviewer: 25%, author: 25%)
 	Pablo Escobar <pablo@escobar.com> (author: 25%)
 	EOF
 	test_cmp expected actual
@@ -68,7 +68,7 @@ test_expect_success "from committish" "
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 33%)
-	Jon Stewart <jon@stewart.com> (signer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -78,7 +78,7 @@ test_expect_success "from single rev committish" "
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 33%)
-	Jon Stewart <jon@stewart.com> (signer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
 	EOF
 	test_cmp expected actual
 "
