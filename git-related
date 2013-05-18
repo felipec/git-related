@@ -56,7 +56,7 @@ class Persons
   end
 
   def self.get(name, email)
-    id = [name, email]
+    id = email.downcase
     person = @@index[id]
     if not person
       person = @@index[id] = Person.new(name, email)
