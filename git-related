@@ -16,10 +16,12 @@ class Person
     @name = name
     @email = email
     @commits = {}
+    @roles = Hash.new(0)
   end
 
-  def add_role(commit)
+  def add_role(commit, role)
     @commits[commit] = true
+    @roles[role] += 1
   end
 
   def <=>(b)
@@ -64,20 +66,20 @@ class Commit
   end
 
   def parse(data)
-    in_body = nil
+    in_body = author = nil
     data.each_line do |line|
       if not in_body
         case line
         when /^author ([^<>]+) <(\S+)> (.+)$/
           author = Persons.get($1, $2)
-          author.add_role(@id)
+          author.add_role(@id, :author)
         when /^$/
           in_body = true
         end
       else
         if line =~ /^(Signed-off-by|Reviewed-by|Acked-by|Cc): ([^<>]+) <(\S+?)>$/
           person = Persons.get($2, $3)
-          person.add_role(@id)
+          person.add_role(@id, :signer) if person != author
         end
       end
     end
@@ -204,5 +206,11 @@ persons = Persons.new
 persons.sort.reverse.each do |person|
   percent = person.size.to_f * 100 / commits.size
   next if percent < $min_percent
-  puts '%s (involved: %u%%)' % [person, percent]
+
+  roles = person.roles.map do |role, role_count|
+    role_percent = role_count.to_f * 100 / commits.size
+    '%s: %u%%' % [role, role_percent]
+  end
+
+  puts '%s (%s)' % [person, roles.join(', ')]
 end
