@@ -163,5 +163,5 @@ end
 count_per_person.each do |person, count|
   percent = count.to_f * 100 / commits.size
   next if percent < $min_percent
-  puts person
+  puts '%s (involved: %u%%)' % [person, percent]
 end
