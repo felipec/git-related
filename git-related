@@ -8,13 +8,59 @@ $min_percent = 10
 $files = []
 $rev_args = []
 
-class Commit
+class Person
 
-  attr_reader :persons
+  attr_reader :roles
+
+  def initialize(name, email)
+    @name = name
+    @email = email
+    @commits = {}
+  end
+
+  def add_role(commit)
+    @commits[commit] = true
+  end
+
+  def <=>(b)
+    self.size <=> b.size
+  end
+
+  def size
+    @commits.size
+  end
+
+  def to_s
+    '%s <%s>' % [@name, @email]
+  end
+
+end
+
+class Persons
+
+  @@index = {}
+
+  include Enumerable
+
+  def each(&block)
+    @@index.values.each(&block)
+  end
+
+  def self.get(name, email)
+    id = [name, email]
+    person = @@index[id]
+    if not person
+      person = @@index[id] = Person.new(name, email)
+    end
+    person
+  end
+
+end
+
+class Commit
 
   def initialize(id)
     @id = id
-    @persons = []
   end
 
   def parse(data)
@@ -23,17 +69,18 @@ class Commit
       if not in_body
         case line
         when /^author ([^<>]+) <(\S+)> (.+)$/
-          @persons << '%s <%s>' % [$1, $2]
+          author = Persons.get($1, $2)
+          author.add_role(@id)
         when /^$/
           in_body = true
         end
       else
         if line =~ /^(Signed-off-by|Reviewed-by|Acked-by|Cc): ([^<>]+) <(\S+?)>$/
-          @persons << '%s <%s>' % [$2, $3]
+          person = Persons.get($2, $3)
+          person.add_role(@id)
         end
       end
     end
-    @persons.uniq!
   end
 
 end
@@ -152,16 +199,10 @@ else
 end
 commits.import
 
-count_per_person = Hash.new(0)
+persons = Persons.new
 
-commits.each do |id, commit|
-  commit.persons.each do |person|
-    count_per_person[person] += 1
-  end
-end
-
-count_per_person.each do |person, count|
-  percent = count.to_f * 100 / commits.size
+persons.sort.reverse.each do |person|
+  percent = person.size.to_f * 100 / commits.size
   next if percent < $min_percent
   puts '%s (involved: %u%%)' % [person, percent]
 end
