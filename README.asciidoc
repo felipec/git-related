@@ -1,0 +1,65 @@
+= git-related =
+
+This tool finds people that might be interested in a patch, by going
+back through the history for each single hunk modified, and finding
+people that reviewed, acknowledged, signed, or authored the code the
+patch is modifying.
+
+It does this by running `git blame` incrementally on each hunk, and then
+parsing the commit message. After gathering all the relevant people, it
+groups them to show what exactly was their role when the participated in
+the development of the relevant commit, and on how many relevant commits
+they participated. They are only displayed if they pass a minimum
+threshold of participation.
+
+For example:
+
+------------
+% git related master..fc/transport/improv
+Junio C Hamano <gitster@pobox.com> (signer: 90%, author: 5%)
+Felipe Contreras <felipe.contreras@gmail.com> (author: 25%, reviewer: 2%)
+Sverre Rabbelier <srabbelier@gmail.com> (author: 17%, acker: 2%, signer: 7%)
+Jeff King <peff@peff.net> (acker: 17%, author: 10%)
+Shawn O. Pearce <spearce@spearce.org> (author: 5%, signer: 2%, cced: 2%)
+Elijah Newren <newren@gmail.com> (author: 10%)
+------------
+
+In addition, it has an option to output the list of commits, instead of the
+contributors, which allows you to easily find out the previous changes to the
+lines your patches modify.
+
+------------
+% git related -c master..fc/transport/improv
+99d9ec0 Merge branch 'fc/transport-helper-no-refspec'
+67c9c78 transport-helper: barf when user tries old:new
+0460ed2 documentation: trivial style cleanups
+126aac5 transport-helper: fix remote helper namespace regression
+21610d8 transport-helper: clarify pushing without refspecs
+a93b4a0 transport-helper: warn when refspec is not used
+664059f transport-helper: update remote helper namespace
+c4458ec fast-export: Allow pruned-references in mark file
+...
+------------
+
+Moreover, when sending patches for review, you can configure `git send-email`
+to use `git related` to find relevant people that should be Cc'ed:
+
+------------
+% git send-email --cc-cmd='git related' *.patch
+------------
+
+== Installation ==
+
+To use this script, simply put `git-related` in your `$PATH` and make sure it
+has executable permissions:
+
+------------
+wget https://raw.github.com/felipec/git-related/master/git-related -O ~/bin/git-related
+chmod +x ~/bin/git-related
+------------
+
+And make sure `~/bin` is in your `$PATH`:
+
+------------
+export PATH="$HOME/bin:$PATH"
+------------
