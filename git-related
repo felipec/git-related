@@ -68,7 +68,7 @@ class ParseOpt
     @list = {}
   end
 
-  def on(short = nil, long = nil, help: nil, &block)
+  def on(short = nil, long = nil, help = nil, &block)
     opt = Option.new(short, long, help, &block)
     @list[short] = opt if short
     @list[long] = opt if long
@@ -121,15 +121,15 @@ end
 opts = ParseOpt.new
 opts.usage = 'git related [options] <files | rev-list options>'
 
-opts.on('p', 'min-percent', help: 'Minium percentage of role participation') do |v|
+opts.on('p', 'min-percent', 'Minium percentage of role participation') do |v|
   $min_percent = v.to_i
 end
 
-opts.on('d', 'since', help: 'How far back to search for relevant commits') do |v|
+opts.on('d', 'since', 'How far back to search for relevant commits') do |v|
   $since = v
 end
 
-opts.on('c', 'commits', help: 'List commits instead of persons') do |v|
+opts.on('c', 'commits', 'List commits instead of persons') do |v|
   $show_commits = v
 end
 
