@@ -24,10 +24,8 @@ KNOWN_ROLES = {
 }
 
 if RUBY_VERSION < "1.9"
-  require 'shellwords'
-
   def File.popen(cmd, *args)
-    cmd = Shellwords.join(cmd) if cmd.kind_of?(Array)
+    cmd = cmd.join(' ') if cmd.kind_of?(Array)
     super(cmd, *args)
   end
 end
