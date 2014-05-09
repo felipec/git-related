@@ -2,7 +2,7 @@
 
 test_description="Test git related"
 
-. ./sharness.sh
+. ./test-lib.sh
 
 setup() {
 	git init &&
