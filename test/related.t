@@ -54,9 +54,9 @@ test_expect_success "multiple patches" "
 	git format-patch --stdout -1 master^ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
-	John Poppins <john@doe.com> (author: 50%)
-	Jon Stewart <jon@stewart.com> (reviewer: 25%, author: 25%)
-	Pablo Escobar <pablo@escobar.com> (author: 25%)
+	John Doe <john@doe.com> (author: 33%)
+	Jon Stewart <jon@stewart.com> (author: 33%)
+	Pablo Escobar <pablo@escobar.com> (author: 33%)
 	EOF
 	test_cmp expected actual
 "

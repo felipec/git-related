@@ -240,6 +240,7 @@ class Commits
   def initialize
     @items = {}
     @main_commits = {}
+    @sources = Hash.new { |hash, key| hash[key] = [] }
   end
 
   def size
@@ -270,8 +271,6 @@ class Commits
   end
 
   def get_blame(source, start, len, from)
-    return if len == 0
-    len ||= 1
     Dir.chdir($base_dir)
     File.popen(['git', 'blame', '--incremental', '-C', '-C',
                '-L', '%u,+%u' % [start, len],
@@ -297,7 +296,17 @@ class Commits
       when /^---\s+(\S+)/
         source = $1 != '/dev/null' ? $1[2..-1] : nil
       when /^@@ -(\d+)(?:,(\d+))?/
-        get_blame(source, $1, $2, id) if source and id
+        next unless source and id
+        next if $2 == 0
+        @sources[[source, id]] << [$1, $2 || 1]
+      end
+    end
+  end
+
+  def blame
+    @sources.each do |(source, id), ranges|
+      ranges.each do |range|
+        get_blame(source, range[0], range[1], id);
       end
     end
   end
@@ -353,6 +362,7 @@ if $files.empty?
 else
   commits.from_patches($files)
 end
+commits.blame
 commits.import
 
 if $show_commits
