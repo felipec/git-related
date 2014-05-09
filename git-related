@@ -270,12 +270,13 @@ class Commits
     end
   end
 
-  def get_blame(source, start, len, from)
+  def get_blame(source, from, ranges)
     Dir.chdir($base_dir)
+    ranges = ranges.map { |range| '-L%u,+%u' % range }
     File.popen(['git', 'blame', '--incremental', '-C', '-C',
-               '-L', '%u,+%u' % [start, len],
-               '--since', $since, from + '^',
-               '--', source]) do |p|
+                *ranges,
+                '--since', $since, from + '^',
+                '--', source]) do |p|
       p.each do |line|
         if line =~ /^[0-9a-fA-F]{40}/
           id = $&
@@ -305,9 +306,7 @@ class Commits
 
   def blame
     @sources.each do |(source, id), ranges|
-      ranges.each do |range|
-        get_blame(source, range[0], range[1], id);
-      end
+      get_blame(source, id, ranges);
     end
   end
 
