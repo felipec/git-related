@@ -1,0 +1,78 @@
+git-related(1)
+==============
+
+NAME
+----
+git-related - tool to find related people and commits of a group of patches
+
+SYNOPSIS
+--------
+[verse]
+'git related' [options] (<files> | <revisions>)
+
+DESCRIPTION
+-----------
+
+Using a group of patches, this tool finds people that might be
+interested in a patch, by going back through the history for each single
+hunk modified, and finding people that reviewed, acknowledged, signed,
+or authored the code the patch is modifying.
+
+It does this by running `git blame` incrementally on each hunk, and
+finding the relevant commit message. After gathering all the relevant
+people, it groups them to show what exactly was their role when the
+participated in the development of the relevant commit, and on how many
+relevant commits they participated. They are only displayed if they pass
+a minimum threshold of participation.
+
+The patches can be specified as files (.path), or as revisions (in the
+format accepted by rev-list).
+
+OUTPUT
+------
+
+The default output lists is person of interest and the invovlement they
+had in the previous patches: author, reviewer, signer, etc.
+
+--------
+Junio C Hamano <xx@gmail.com> (signer: 90%, author: 5%)
+Felipe Contreras <xx@gmail.com> (author: 25%, reviewer: 2%)
+Sverre Rabbelier <xx@gmail.com> (author: 17%, acker: 2%, signer: 7%)
+Jeff King <xx@gmail.com> (acker: 17%, author: 10%)
+Shawn O. Pearce <xx@gmail.com> (author: 5%, signer: 2%, cced: 2%)
+Elijah Newren <xx@gmail.com> (author: 10%)
+--------
+
+OPTIONS
+-------
+
+--min-percent::
+	Minium percentage of role participation (default: 10)
+
+--since::
+	How far back to search for relevant commits (default: 5-years-ago).
+
+--commits[=format]::
+	List commits instead of persons. Possile values are
+	'long', 'full', 'raw', 'oneline'. (default: oneline)
+
+EXAMPLES
+--------
+
+* From 'master' to the current 'HEAD':
++
+------------
+$ git related master..
+------------
+
+* Same as above:
++
+------------
+$ git related master
+------------
+
+* From a group of patch files:
++
+------------
+$ git related *.patch
+------------
