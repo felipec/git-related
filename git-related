@@ -371,6 +371,8 @@ if $show_commits
     puts commits.list
   when 'full'
     cmd = %w[git log --patch --no-walk]
+  when 'long'
+    cmd = %w[git log --no-walk]
   else
     cmd = %w[git log --oneline --no-walk]
   end
