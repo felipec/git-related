@@ -1,5 +1,8 @@
 prefix := $(HOME)
 
+bindir := $(prefix)/bin
+mandir := $(prefix)/share/man/man1
+
 all:
 
 doc: doc/git-related.1
@@ -10,14 +13,17 @@ test:
 doc/git-related.1: doc/git-related.txt
 	a2x -d manpage -f manpage $<
 
+clean:
+	$(RM) doc/git-related.1
+
 D = $(DESTDIR)
 
 install:
-	install -D -m 755 git-related \
-		$(D)$(prefix)/bin/git-related
+	install -d -m 755 $(D)$(bindir)/
+	install -m 755 git-related $(D)$(bindir)/git-related
 
 install-doc: doc
-	install -D -m 644 doc/git-related.1 \
-		$(D)$(prefix)/share/man/man1/git-related.1
+	install -d -m 755 $(D)$(mandir)/
+	install -m 644 doc/git-related.1 $(D)$(mandir)/git-related.1
 
-.PHONY: all test
+.PHONY: all test install install-doc clean
