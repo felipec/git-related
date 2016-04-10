@@ -103,4 +103,19 @@ test_expect_success "commits" "
 	test_cmp expected actual
 "
 
+test_expect_success "encoding" "
+	export LC_ALL=C &&
+	echo umlaut >> content &&
+	git commit -q -a -m umlaut --author='Author Ümlaut <author@umlaut.com>' &&
+	echo other >> content &&
+	git commit -q -a -m other --author='Other Content <other@content.com>' &&
+	git related -1 next | sort > actual &&
+	cat > expected <<-EOF &&
+	Author Ümlaut <author@umlaut.com> (author: 33%)
+	Mary Poppins <mary@yahoo.com.uk> (author: 33%)
+	Ocatio Paz <octavio.paz@gmail.com> (author: 33%)
+	EOF
+	test_cmp expected actual
+"
+
 test_done
