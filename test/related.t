@@ -5,7 +5,7 @@ test_description="Test git related"
 . ./test-lib.sh
 
 setup() {
-	git init &&
+	git init -q &&
 	echo one > content &&
 	git add content &&
 	git commit -q -m one --author='Pablo Escobar <pablo@escobar.com>' &&
@@ -14,7 +14,7 @@ setup() {
 	echo three >> content &&
 	git commit -q -a -m three --author='John Doe <john@doe.com>' &&
 	echo four >> content &&
-	git branch basic &&
+	git branch -q basic &&
 	git commit -q -a -F - --author='John Poppins <john@doe.com>' <<-EOF &&
 	four
 
@@ -22,7 +22,7 @@ setup() {
 	EOF
 	echo five >> content &&
 	git commit -q -a -m five --author='Mary Poppins <mary@yahoo.com.uk>'
-	git checkout -b next &&
+	git checkout -q -b next &&
 	echo six >> content &&
 	git commit -q -a -m six --author='Ocatio Paz <octavio.paz@gmail.com>'
 }
