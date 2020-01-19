@@ -257,7 +257,7 @@ class Commits
 
   def import
     return if @items.empty?
-    File.popen(%w[git cat-file --batch], 'r+', :external_encoding=>"utf-8") do |p|
+    File.popen(%w[git cat-file --batch], 'r+', external_encoding: 'utf-8') do |p|
       p.write(@items.keys.join("\n"))
       p.close_write
       p.each do |line|
@@ -276,7 +276,7 @@ class Commits
     File.popen(['git', 'blame', '--incremental', '-C', '-C',
                 *ranges,
                 '--since', $since, from + '^',
-                '--', source], :external_encoding=>"utf-8") do |p|
+                '--', source], external_encoding: 'utf-8') do |p|
       p.each do |line|
         if line =~ /^[0-9a-fA-F]{40}/
           id = $&
