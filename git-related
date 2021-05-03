@@ -10,7 +10,6 @@ $rev_args = []
 $show_commits = false
 
 $mailmaps = {}
-$mailmaps_complex = {}
 
 git_dir = %x[git rev-parse --git-dir].chomp
 $base_dir = File.dirname(git_dir)
@@ -29,13 +28,13 @@ def get_mailmap(filename)
     f.each do |line|
       case line.gsub(/\s*#.*$/, '')
       when /^([^<>]+)\s+<(\S+)>$/
-        $mailmaps[$2] = [ $1, nil ]
+        $mailmaps[[nil, $2]] = [ $1, nil ]
       when /^<(\S+)>\s+<(\S+)>$/
-        $mailmaps[$2] = [ nil, $1 ]
+        $mailmaps[[nil, $2]] = [ nil, $1 ]
       when /^([^<>]+)\s+<(\S+)>\s+<(\S+)>$/
-        $mailmaps[$3] = [ $1, $2 ]
+        $mailmaps[[nil, $3]] = [ $1, $2 ]
       when /^([^<>]+)\s+<(\S+)>\s+([^<>]+)\s+<(\S+)>$/
-        $mailmaps_complex[[$3, $4]] = [ $1, $2 ]
+        $mailmaps[[$3, $4]] = [ $1, $2 ]
       end
     end
   end
@@ -178,10 +177,7 @@ class Persons
   def self.get(name, email)
 
     # fix with mailmap
-    person = [name, email]
-    new = nil
-    new = $mailmaps_complex[person] if not new and $mailmaps_complex.include?(person)
-    new = $mailmaps[email] if not new and $mailmaps.include?(email)
+    new = $mailmaps[[name, email]] || $mailmaps[[nil, email]]
     if new
       name = new[0] if new[0]
       email = new[1] if new[1]
