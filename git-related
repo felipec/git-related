@@ -313,7 +313,7 @@ class Commits
   end
 
   def from_rev_args(args)
-    revs = IO.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).readlines(chomp: true)
+    revs = IO.popen(%w[git rev-parse --revs-only --default @{upstream} --symbolic] + args).readlines(chomp: true)
 
     if revs.size == 1
       r = revs[0]
