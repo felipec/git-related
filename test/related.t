@@ -33,8 +33,7 @@ test_expect_success "basic" "
 	git format-patch --stdout -1 basic > patch &&
 	git related patch | sort > actual &&
 	cat > expected <<-EOF &&
-	Jon Stewart <jon@stewart.com> (author: 50%)
-	Pablo Escobar <pablo@escobar.com> (author: 50%)
+	Jon Stewart <jon@stewart.com> (author: 100%)
 	EOF
 	test_cmp expected actual
 "
@@ -54,9 +53,8 @@ test_expect_success "multiple patches" "
 	git format-patch --stdout -1 master^ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
-	John Doe <john@doe.com> (author: 33%)
-	Jon Stewart <jon@stewart.com> (author: 33%)
-	Pablo Escobar <pablo@escobar.com> (author: 33%)
+	John Doe <john@doe.com> (author: 50%)
+	Jon Stewart <jon@stewart.com> (author: 50%)
 	EOF
 	test_cmp expected actual
 "
