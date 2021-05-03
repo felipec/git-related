@@ -22,6 +22,21 @@ KNOWN_ROLES = {
   'Cc' => :cced,
 }
 
+if RUBY_VERSION < "2.4"
+  class IO
+    alias old_each each
+    alias old_readlines readlines
+
+    def each(*args)
+      old_each() { |e| yield e.chomp }
+    end
+
+    def readlines(*args)
+      old_readlines().map { |e| e.chomp }
+    end
+  end
+end
+
 def get_mailmap(filename)
   return unless File.exists?(filename)
   File.open(filename) do |f|
