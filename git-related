@@ -23,13 +23,6 @@ KNOWN_ROLES = {
   'Cc' => :cced,
 }
 
-if RUBY_VERSION < "1.9"
-  def File.popen(cmd, *args)
-    cmd = cmd.join(' ') if cmd.kind_of?(Array)
-    super(cmd, *args)
-  end
-end
-
 def get_mailmap(filename)
   return unless File.exists?(filename)
   File.open(filename) do |f|
