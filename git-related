@@ -251,13 +251,13 @@ class Commits
 
   def import
     return if @items.empty?
-    File.popen(%w[git cat-file --batch], 'r+', external_encoding: 'utf-8') do |p|
-      p.write(@items.keys.join("\n"))
-      p.close_write
-      p.each do |line|
+    IO.popen(%w[git cat-file --batch], 'r+', external_encoding: 'utf-8') do |pipe|
+      pipe.write(@items.keys.join("\n"))
+      pipe.close_write
+      pipe.each do |line|
         if line =~ /^([0-9a-fA-F]{40}) commit (\d+)/
           id, len = $1, $2
-          data = p.read($2.to_i)
+          data = pipe.read($2.to_i)
           @items[id].parse(data)
         end
       end
@@ -268,11 +268,11 @@ class Commits
     Dir.chdir($base_dir)
     ranges = ranges.map { |range| '-L%u,+%u' % range }
     id = nil
-    File.popen(['git', 'blame', '--incremental', '-C', '-C',
-                *ranges,
-                '--since', $since, from + '^',
-                '--', source], external_encoding: 'utf-8') do |p|
-      p.each(chomp: true) do |line|
+    IO.popen(['git', 'blame', '--incremental', '-C', '-C',
+              *ranges,
+              '--since', $since, from + '^',
+              '--', source], external_encoding: 'utf-8') do |pipe|
+      pipe.each(chomp: true) do |line|
         if line =~ /^[0-9a-fA-F]{40}/
           id = $&
           @items[id] ||= Commit.new(id) if not @main_commits.include?(id)
@@ -319,7 +319,7 @@ class Commits
   def from_rev_args(args)
     revs = []
 
-    File.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).each do |rev|
+    IO.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).each do |rev|
       revs << rev.chomp
     end
 
@@ -332,12 +332,11 @@ class Commits
       args = revs
     end
 
-    File.popen(%w[git rev-list --reverse] + args) do |p|
-      p.each do |e|
-        id = e.chomp
+    IO.popen(%w[git rev-list --reverse] + args) do |pipe|
+      pipe.each(chomp: true) do |id|
         @main_commits[id] = true
-        File.popen(%w[git show -C --oneline] + [id]) do |p|
-          scan_patch(p, id)
+        IO.popen(%w[git show -C --oneline] + [id]) do |pipe|
+          scan_patch(pipe, id)
         end
       end
     end
