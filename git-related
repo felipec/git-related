@@ -266,7 +266,7 @@ class Commits
     id = nil
     IO.popen(['git', 'blame', '--incremental', '-C', '-C',
               *ranges,
-              '--since', $since, from + '^',
+              '--since', $since, from + '~',
               '--', source], external_encoding: 'utf-8') do |pipe|
       pipe.each(chomp: true) do |line|
         if line =~ /^[0-9a-fA-F]{40}/
@@ -280,9 +280,9 @@ class Commits
     Dir.chdir($cur_dir)
   end
 
-  def scan_patch(f, id = nil)
+  def scan_patch(io, id = nil)
     source = nil
-    f.each do |line|
+    io.each do |line|
       case line
       when /^From ([0-9a-fA-F]+) (.+)$/
         id = $1
@@ -313,14 +313,9 @@ class Commits
   end
 
   def from_rev_args(args)
-    revs = []
+    revs = IO.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).readlines(chomp: true)
 
-    IO.popen(%w[git rev-parse --revs-only --default HEAD --symbolic] + args).each do |rev|
-      revs << rev.chomp
-    end
-
-    case revs.size
-    when 1
+    if revs.size == 1
       r = revs[0]
       r = '^' + r if r[0] != '-'
       args = [ r, 'HEAD' ]
