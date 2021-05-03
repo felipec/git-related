@@ -335,7 +335,7 @@ class Commits
     IO.popen(%w[git rev-list --reverse] + args) do |pipe|
       pipe.each(chomp: true) do |id|
         @main_commits[id] = true
-        IO.popen(%w[git show -C --oneline] + [id]) do |pipe|
+        IO.popen(%w[git show -C --oneline] << id) do |pipe|
           scan_patch(pipe, id)
         end
       end
