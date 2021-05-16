@@ -44,9 +44,9 @@ Elijah Newren <xx@gmail.com> (author: 10%)
 OPTIONS
 -------
 
--p::
---min-percent=<number>::
-	Minium percentage of role participation (default: 10)
+-t::
+--threshold::
+	Threshold of role participation (default: 10)
 
 -d::
 --since=<since>::
