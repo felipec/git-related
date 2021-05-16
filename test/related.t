@@ -20,6 +20,7 @@ setup () {
 
 	Reviewed-by: Jon Stewart <jon@stewart.com>
 	EOF
+	git checkout -q -b feature -t &&
 	echo five >> content &&
 	git commit -q -a -m five --author='Mary Poppins <mary@yahoo.com.uk>'
 	git checkout -q -b next &&
@@ -39,7 +40,7 @@ test_expect_success "basic" "
 "
 
 test_expect_success "others" "
-	git format-patch --stdout -1 master > patch &&
+	git format-patch --stdout -1 feature > patch &&
 	git related patch | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
@@ -49,8 +50,8 @@ test_expect_success "others" "
 "
 
 test_expect_success "multiple patches" "
-	git format-patch --stdout -1 master > patch1 &&
-	git format-patch --stdout -1 master~ > patch2 &&
+	git format-patch --stdout -1 feature > patch1 &&
+	git format-patch --stdout -1 feature~ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 50%)
@@ -60,7 +61,7 @@ test_expect_success "multiple patches" "
 "
 
 test_expect_success "from revision range" "
-	git related -1 master | sort > actual &&
+	git related -1 feature | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
@@ -69,7 +70,7 @@ test_expect_success "from revision range" "
 "
 
 test_expect_success "from single rev revision range" "
-	git related -1 master | sort > actual &&
+	git related -1 feature | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
@@ -83,7 +84,7 @@ test_expect_success "mailmap" "
 	Jon McAvoy <jon@stewart.com>
 	John Poppins <john@poppins.com> <john@doe.com>
 	EOF
-	git related -1 master | sort > actual &&
+	git related -1 feature | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@poppins.com> (author: 66%)
 	Jon McAvoy <jon@stewart.com> (reviewer: 33%, author: 33%)
@@ -92,7 +93,7 @@ test_expect_success "mailmap" "
 "
 
 test_expect_success "commits" "
-	git related -craw -1 master | git log --format='%s' --no-walk --stdin > actual &&
+	git related -craw -1 feature | git log --format='%s' --no-walk --stdin > actual &&
 	cat > expected <<-EOF &&
 	four
 	three
