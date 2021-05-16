@@ -20,6 +20,8 @@ setup () {
 
 	Reviewed-by: Jon Stewart <jon@stewart.com>
 	EOF
+	echo four.fix >> content &&
+	git commit -q -a -m four.fix --author='John Poppins <john.poppings@google.com>' &&
 	git checkout -q -b feature -t &&
 	echo five >> content &&
 	git commit -q -a -m five --author='Mary Poppins <mary@yahoo.com.uk>'
@@ -44,8 +46,9 @@ test_expect_success "others" "
 	git format-patch --stdout -1 feature > patch &&
 	git related patch | sort > actual &&
 	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 66%)
-	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -55,8 +58,8 @@ test_expect_success "multiple patches" "
 	git format-patch --stdout -1 feature~ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
-	John Doe <john@doe.com> (author: 50%)
-	Jon Stewart <jon@stewart.com> (author: 50%)
+	John Poppins <john@doe.com> (author: 66%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -64,8 +67,9 @@ test_expect_success "multiple patches" "
 test_expect_success "from revision range" "
 	git related master..feature | sort > actual &&
 	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 66%)
-	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -73,8 +77,9 @@ test_expect_success "from revision range" "
 test_expect_success "from single revision" "
 	git related master | sort > actual &&
 	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 66%)
-	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -82,8 +87,9 @@ test_expect_success "from single revision" "
 test_expect_success "no arguments" "
 	git related | sort > actual &&
 	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (author: 33%)
 	John Poppins <john@doe.com> (author: 66%)
-	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -96,8 +102,9 @@ test_expect_success "mailmap" "
 	EOF
 	git related | sort > actual &&
 	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (author: 33%)
 	John Poppins <john@poppins.com> (author: 66%)
-	Jon McAvoy <jon@stewart.com> (reviewer: 33%, author: 33%)
+	Jon McAvoy <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
 "
@@ -105,9 +112,9 @@ test_expect_success "mailmap" "
 test_expect_success "commits" "
 	git related -craw | git log --format='%s' --no-walk --stdin > actual &&
 	cat > expected <<-EOF &&
+	four.fix
 	four
 	three
-	one
 	EOF
 	test_cmp expected actual
 "
