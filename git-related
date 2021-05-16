@@ -390,5 +390,6 @@ persons.sort.reverse.each do |person|
     '%s: %u%%' % [role, role_percent]
   end
 
-  puts '%s (%s)' % [person, roles.join(', ')]
+  format = STDOUT.isatty ? "%s \e[1;34m(%s)\e[0m" : '%s (%s)'
+  puts format % [person, roles.join(', ')]
 end
