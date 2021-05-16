@@ -70,8 +70,8 @@ test_expect_success "from revision range" "
 	test_cmp expected actual
 "
 
-test_expect_success "from single rev revision range" "
-	git related -1 feature | sort > actual &&
+test_expect_success "from single revision" "
+	git related master | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
