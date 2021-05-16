@@ -24,7 +24,7 @@ setup () {
 	git commit -q -a -m five --author='Mary Poppins <mary@yahoo.com.uk>'
 	git checkout -q -b next &&
 	echo six >> content &&
-	git commit -q -a -m six --author='Ocatio Paz <octavio.paz@gmail.com>'
+	git commit -q -a -m six --author='Octavio Paz <octavio.paz@gmail.com>'
 }
 
 setup
@@ -111,7 +111,7 @@ test_expect_success "encoding" "
 	cat > expected <<-EOF &&
 	Author Ümlaut <author@umlaut.com> (author: 33%)
 	Mary Poppins <mary@yahoo.com.uk> (author: 33%)
-	Ocatio Paz <octavio.paz@gmail.com> (author: 33%)
+	Octavio Paz <octavio.paz@gmail.com> (author: 33%)
 	EOF
 	test_cmp expected actual
 "
