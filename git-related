@@ -9,7 +9,6 @@ $show_commits = false
 $mailmaps = {}
 
 $base_dir = %x[git rev-parse --show-toplevel].chomp
-$cur_dir = Dir.pwd
 
 KNOWN_ROLES = {
   'Signed-off-by' => :signer,
@@ -272,7 +271,6 @@ class Commits
   end
 
   def get_blame(source, from, ranges)
-    Dir.chdir($base_dir)
     ranges = ranges.map { |range| '-L%u,+%u' % range }
     id = nil
     IO.popen(['git', 'blame', '--incremental', '-C', '-C',
@@ -288,7 +286,6 @@ class Commits
         end
       end
     end
-    Dir.chdir($cur_dir)
   end
 
   def scan_patch(io, id = nil)
@@ -309,8 +306,10 @@ class Commits
   end
 
   def blame
-    @sources.each do |(source, id), ranges|
-      get_blame(source, id, ranges);
+    Dir.chdir($base_dir) do
+      @sources.each do |(source, id), ranges|
+        get_blame(source, id, ranges);
+      end
     end
     @items.reject! { |_,commit| commit.boundary }
   end
