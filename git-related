@@ -328,7 +328,7 @@ class Commits
     if revs.size == 1
       r = revs[0]
       r = '^' + r if r[0] != '-'
-      args = [ r, 'HEAD' ]
+      args = [ '@', r ]
     else
       args = revs
     end
