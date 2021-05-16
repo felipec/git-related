@@ -279,11 +279,11 @@ class Commits
               *ranges,
               '--since', $since, from + '~',
               '--', source], external_encoding: 'utf-8') do |pipe|
-      pipe.each(chomp: true) do |line|
+      pipe.each do |line|
         if line =~ /^\h{40}/
           id = $&
           @items[id] ||= Commit.new(id) if not @main_commits.include?(id)
-        elsif line == 'boundary'
+        elsif line == "boundary\n"
           @items[id].boundary = true
         end
       end
