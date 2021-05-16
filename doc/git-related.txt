@@ -61,6 +61,11 @@ OPTIONS
 --roles::
   Show specific roles in the output (singer, reviewer, helper, etc.).
 
+-f::
+--files::
+  Gather the modified files, and who has touched them recently. Do not call
+  `git blame` to figure out the details.
+
 EXAMPLES
 --------
 

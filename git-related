@@ -8,6 +8,8 @@ $patches = []
 $rev_args = []
 $show_commits = false
 $roles = false
+$base_rev = 'master'
+$files = false
 
 $persons = {}
 $mailmaps = {}
@@ -70,6 +72,10 @@ end
 
 opts.on('r', 'roles', 'Display specific roles') do |v|
   $roles = v
+end
+
+opts.on('f', 'files', 'Gather file history (not blame)') do |v|
+  $files = v
 end
 
 opts.parse
@@ -214,12 +220,21 @@ class Commits
   end
 
   def blame
-    Dir.chdir($base_dir) do
-      @sources.each do |(source, id), ranges|
-        get_blame(source, id, ranges);
+    if not $files
+      Dir.chdir($base_dir) do
+        @sources.each do |(source, id), ranges|
+          get_blame(source, id, ranges);
+        end
+      end
+      @items.reject! { |_,commit| commit.boundary }
+    else
+      files = @sources.map { |(file, _), _| file }.uniq
+      IO.popen(%w[git rev-list -n 30 --no-merges] + [$base_rev, '--'] + files) do |pipe|
+        pipe.each(chomp: true) do |id|
+          @items[id] ||= Commit.new(id) if not @main_commits.include?(id)
+        end
       end
     end
-    @items.reject! { |_,commit| commit.boundary }
   end
 
   def from_patches(files)
@@ -235,14 +250,24 @@ class Commits
 
     if revs.size == 1
       r = revs[0]
+      $base_rev = r
       r = '^' + r if r[0] != '-'
       args = [ '@', r ]
     else
       args = revs
+      $base_rev = revs[1][1..]
     end
 
-    IO.popen(%w[git log -C --format=%x00%H -p] + args) do |pipe|
-      scan(pipe)
+    if not $files
+      IO.popen(%w[git log -C --format=%x00%H -p] + args) do |pipe|
+        scan(pipe)
+      end
+    else
+      IO.popen(%w[git log -C --format= --name-only] + args) do |pipe|
+        pipe.each(chomp: true) do |file|
+          @sources[[file, nil]] = true
+        end
+      end
     end
   end
 

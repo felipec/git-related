@@ -115,6 +115,17 @@ test_expect_success "commits" "
 	test_cmp expected actual
 "
 
+test_expect_success "files" "
+	git related -f | sort > actual &&
+	cat > expected <<-EOF &&
+	John Poppins <john.poppings@google.com> (20%)
+	John Poppins <john@doe.com> (40%)
+	Jon Stewart <jon@stewart.com> (20%)
+	Pablo Escobar <pablo@escobar.com> (20%)
+	EOF
+	test_cmp expected actual
+"
+
 test_expect_success "encoding" "
 	export LC_ALL=C &&
 	git checkout next &&
