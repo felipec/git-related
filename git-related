@@ -4,7 +4,7 @@ require 'parseopt'
 
 $since = '5-years-ago'
 $threshold = 10
-$files = []
+$patches = []
 $rev_args = []
 $show_commits = false
 $roles = false
@@ -250,17 +250,17 @@ end
 
 ARGV.each do |e|
   if File.exists?(e)
-    $files << e
+    $patches << e
   else
     $rev_args << e
   end
 end
 
 commits = Commits.new
-if $files.empty?
+if $patches.empty?
   commits.from_rev_args($rev_args)
 else
-  commits.from_patches($files)
+  commits.from_patches($patches)
 end
 commits.blame
 commits.import
