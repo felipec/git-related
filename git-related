@@ -292,7 +292,7 @@ class Commits
     source = nil
     io.each do |line|
       case line
-      when /^From (\h{40}) /
+      when /^From (\h{40}) /, /\0(\h{40})$/
         id = $1
         @main_commits[id] = true
       when /^---\s+(\S+)/
@@ -333,13 +333,8 @@ class Commits
       args = revs
     end
 
-    IO.popen(%w[git rev-list --reverse] + args) do |pipe|
-      pipe.each(chomp: true) do |id|
-        @main_commits[id] = true
-        IO.popen(%w[git show -C --oneline] << id) do |pipe|
-          scan_patch(pipe, id)
-        end
-      end
+    IO.popen(%w[git log -C --format=%x00%H -p] + args) do |pipe|
+      scan_patch(pipe)
     end
   end
 
