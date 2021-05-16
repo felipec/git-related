@@ -23,9 +23,10 @@ setup () {
 	git checkout -q -b feature -t &&
 	echo five >> content &&
 	git commit -q -a -m five --author='Mary Poppins <mary@yahoo.com.uk>'
-	git checkout -q -b next &&
+	git checkout -q -b next -t &&
 	echo six >> content &&
-	git commit -q -a -m six --author='Octavio Paz <octavio.paz@gmail.com>'
+	git commit -q -a -m six --author='Octavio Paz <octavio.paz@gmail.com>' &&
+	git checkout -q -
 }
 
 setup
@@ -104,6 +105,7 @@ test_expect_success "commits" "
 
 test_expect_success "encoding" "
 	export LC_ALL=C &&
+	git checkout next &&
 	echo umlaut >> content &&
 	git commit -q -a -m umlaut --author='Author Ümlaut <author@umlaut.com>' &&
 	echo other >> content &&
