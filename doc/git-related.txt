@@ -48,7 +48,7 @@ OPTIONS
 --threshold::
 	Threshold of role participation (default: 10)
 
--d::
+-s::
 --since=<since>::
 	How far back to search for relevant commits (default: 5-years-ago).
 

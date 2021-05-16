@@ -60,7 +60,7 @@ opts.on('t', 'threshold', 'Threshold of role participation') do |v|
   $threshold = v.to_i
 end
 
-opts.on('d', 'since', 'How far back to search for relevant commits') do |v|
+opts.on('s', 'since', 'How far back to search for relevant commits') do |v|
   $since = v
 end
 
