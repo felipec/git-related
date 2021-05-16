@@ -94,7 +94,7 @@ test_expect_success "mailmap" "
 	Jon McAvoy <jon@stewart.com>
 	John Poppins <john@poppins.com> <john@doe.com>
 	EOF
-	git related -1 feature | sort > actual &&
+	git related | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@poppins.com> (author: 66%)
 	Jon McAvoy <jon@stewart.com> (reviewer: 33%, author: 33%)
@@ -103,7 +103,7 @@ test_expect_success "mailmap" "
 "
 
 test_expect_success "commits" "
-	git related -craw -1 feature | git log --format='%s' --no-walk --stdin > actual &&
+	git related -craw | git log --format='%s' --no-walk --stdin > actual &&
 	cat > expected <<-EOF &&
 	four
 	three
