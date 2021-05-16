@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 
-# This script finds people that might be interested in a patch
-# usage: git related <files | rev-list options>
-
 $since = '5-years-ago'
 $min_percent = 10
 $files = []
