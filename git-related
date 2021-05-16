@@ -263,7 +263,7 @@ class Commits
       pipe.write(@items.keys.join("\n"))
       pipe.close_write
       pipe.each do |line|
-        if line =~ /^([0-9a-fA-F]{40}) commit (\d+)/
+        if line =~ /^(\h{40}) commit (\d+)/
           id, len = $1, $2
           data = pipe.read($2.to_i)
           @items[id].parse(data)
@@ -281,7 +281,7 @@ class Commits
               '--since', $since, from + '~',
               '--', source], external_encoding: 'utf-8') do |pipe|
       pipe.each(chomp: true) do |line|
-        if line =~ /^[0-9a-fA-F]{40}/
+        if line =~ /^\h{40}/
           id = $&
           @items[id] ||= Commit.new(id) if not @main_commits.include?(id)
         elsif line == 'boundary'
@@ -296,7 +296,7 @@ class Commits
     source = nil
     io.each do |line|
       case line
-      when /^From ([0-9a-fA-F]+) (.+)$/
+      when /^From (\h+) (.+)$/
         id = $1
         @main_commits[id] = true
       when /^---\s+(\S+)/
