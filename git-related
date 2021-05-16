@@ -296,7 +296,7 @@ class Commits
     source = nil
     io.each do |line|
       case line
-      when /^From (\h+) (.+)$/
+      when /^From (\h{40}) /
         id = $1
         @main_commits[id] = true
       when /^---\s+(\S+)/
