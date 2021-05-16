@@ -3,36 +3,34 @@ git-related(1)
 
 NAME
 ----
-git-related - tool to find related people and commits of a group of patches
+git-related - Find related people and commits
 
 SYNOPSIS
 --------
 [verse]
-'git related' [options] (<files> | <revisions>)
+'git related' [<options>] (<revision range> | <patches>)
 
 DESCRIPTION
 -----------
 
-Using a group of patches, this tool finds people that might be
-interested in a patch, by going back through the history for each single
-hunk modified, and finding people that reviewed, acknowledged, signed,
-or authored the code the patch is modifying.
+This tool finds people that might be interested in a commit by going back
+through the history for each single hunk modified, and gathering the people that
+reviewed, acknowledged, signed, or authored the code the patch is modifying.
 
 It does this by running `git blame` incrementally on each hunk, and
-finding the relevant commit message. After gathering all the relevant
-people, it groups them to show what exactly was their role when the
-participated in the development of the relevant commit, and on how many
-relevant commits they participated. They are only displayed if they pass
+fetching the relevant commit message. After gathering all the relevant
+people, it groups them to show what exactly was their role when they
+participated in the development of the relevant commit, and how many
+relevant commits they participated in. They are only displayed if they pass
 a minimum threshold of participation.
 
-The patches can be specified as files (.path), or as revisions (in the
-format accepted by rev-list).
+The commits can be a revision range (as used by `git log`) or files (.patch).
 
 OUTPUT
 ------
 
-The default output lists is person of interest and the invovlement they
-had in the previous patches: author, reviewer, signer, etc.
+The default output lists the person of interest and the involvement they had in
+the previous patches: author, reviewer, signer, etc.
 
 --------
 Junio C Hamano <xx@gmail.com> (signer: 90%, author: 5%)
@@ -46,29 +44,38 @@ Elijah Newren <xx@gmail.com> (author: 10%)
 OPTIONS
 -------
 
---min-percent::
+-p::
+--min-percent=<number>::
 	Minium percentage of role participation (default: 10)
 
---since::
+-d::
+--since=<since>::
 	How far back to search for relevant commits (default: 5-years-ago).
 
---commits[=format]::
-	List commits instead of persons. Possile values are
+-c::
+--commits[=<format>]::
+	List commits instead of persons. Possible values are
 	'long', 'full', 'raw', 'oneline'. (default: oneline)
 
 EXAMPLES
 --------
 
-* From 'master' to the current 'HEAD':
+* From 'master' to the current branch:
 +
 ------------
-$ git related master..
+$ git related master..@
 ------------
 
 * Same as above:
 +
 ------------
 $ git related master
+------------
+
+* Or if 'master' is your upstream tracking branch:
++
+------------
+$ git related
 ------------
 
 * From a group of patch files:
