@@ -8,8 +8,7 @@ $show_commits = false
 
 $mailmaps = {}
 
-git_dir = %x[git rev-parse --git-dir].chomp
-$base_dir = File.dirname(git_dir)
+$base_dir = %x[git rev-parse --show-toplevel].chomp
 $cur_dir = Dir.pwd
 
 KNOWN_ROLES = {
