@@ -11,7 +11,7 @@ test:
 	$(MAKE) -C test
 
 doc/git-related.1: doc/git-related.txt
-	a2x -d manpage -f manpage $<
+	asciidoctor -b manpage $<
 
 clean:
 	$(RM) doc/git-related.1
