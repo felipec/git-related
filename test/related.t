@@ -61,7 +61,7 @@ test_expect_success "multiple patches" "
 "
 
 test_expect_success "from revision range" "
-	git related -1 feature | sort > actual &&
+	git related master..feature | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
