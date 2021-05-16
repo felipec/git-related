@@ -4,7 +4,7 @@ test_description="Test git related"
 
 . ./test-lib.sh
 
-setup() {
+setup () {
 	git init -q &&
 	echo one > content &&
 	git add content &&
@@ -50,7 +50,7 @@ test_expect_success "others" "
 
 test_expect_success "multiple patches" "
 	git format-patch --stdout -1 master > patch1 &&
-	git format-patch --stdout -1 master^ > patch2 &&
+	git format-patch --stdout -1 master~ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
 	John Doe <john@doe.com> (author: 50%)
@@ -59,7 +59,7 @@ test_expect_success "multiple patches" "
 	test_cmp expected actual
 "
 
-test_expect_success "from committish" "
+test_expect_success "from revision range" "
 	git related -1 master | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
@@ -68,7 +68,7 @@ test_expect_success "from committish" "
 	test_cmp expected actual
 "
 
-test_expect_success "from single rev committish" "
+test_expect_success "from single rev revision range" "
 	git related -1 master | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john@doe.com> (author: 66%)
