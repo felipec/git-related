@@ -79,6 +79,15 @@ test_expect_success "from single revision" "
 	test_cmp expected actual
 "
 
+test_expect_success "no arguments" "
+	git related | sort > actual &&
+	cat > expected <<-EOF &&
+	John Poppins <john@doe.com> (author: 66%)
+	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
+	EOF
+	test_cmp expected actual
+"
+
 test_expect_success "mailmap" "
 	test_when_finished 'rm -rf .mailmap' &&
 	cat > .mailmap <<-EOF &&
