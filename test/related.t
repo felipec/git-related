@@ -10,7 +10,7 @@ setup () {
 	git add content &&
 	git commit -q -m one --author='Pablo Escobar <pablo@escobar.com>' &&
 	echo two >> content &&
-	git commit -q -a -m one --author='Jon Stewart <jon@stewart.com>' &&
+	git commit -q -a -m two --author='Jon Stewart <jon@stewart.com>' &&
 	echo three >> content &&
 	git commit -q -a -m three --author='John Doe <john@doe.com>' &&
 	echo four >> content &&
