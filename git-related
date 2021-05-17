@@ -266,7 +266,8 @@ class Commits
     end
   end
 
-  def scan_patch(io, id = nil)
+  def scan_patch(io, patch: false)
+    id = nil
     source = nil
     io.each do |line|
       case line
@@ -275,10 +276,11 @@ class Commits
         @main_commits[id] = true
       when /^---\s+(\S+)/
         source = $1 != '/dev/null' ? $1[2..-1] : nil
-      when /^@@ -(\d+)(?:,(\d+))?/
+      when /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))?/
         next unless source and id
-        next if !$2 || $2 == '0'
-        @sources[[source, id]] << [$1, $2]
+        start, len = patch ? [$1, $2] : [$3, $4]
+        next if !len || len == '0'
+        @sources[[source, id]] << [start, len]
       end
     end
   end
@@ -295,7 +297,7 @@ class Commits
   def from_patches(files)
     files.each do |file|
       File.open(file) do |f|
-        scan_patch(f)
+        scan_patch(f, patch: true)
       end
     end
   end
