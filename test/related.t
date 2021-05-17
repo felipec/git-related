@@ -98,12 +98,12 @@ test_expect_success "mailmap" "
 	test_when_finished 'rm -rf .mailmap' &&
 	cat > .mailmap <<-EOF &&
 	Jon McAvoy <jon@stewart.com>
-	John Poppins <john@poppins.com> <john@doe.com>
+	John Poppins <john.poppings@google.com> <john@doe.com>
+	John Poppins <john.poppings@google.com> <john@poppings.com>
 	EOF
 	git related | sort > actual &&
 	cat > expected <<-EOF &&
-	John Poppins <john.poppings@google.com> (author: 33%)
-	John Poppins <john@poppins.com> (author: 66%)
+	John Poppins <john.poppings@google.com> (author: 100%)
 	Jon McAvoy <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
