@@ -6,6 +6,7 @@ $files = []
 $rev_args = []
 $show_commits = false
 
+$persons = {}
 $mailmaps = {}
 
 $base_dir = %x[git rev-parse --show-toplevel].chomp
@@ -172,23 +173,10 @@ class Person
     '%s <%s>' % [@name, @email]
   end
 
-end
-
-class Persons
-
-  @@index = {}
-
-  include Enumerable
-
-  def each(&block)
-    @@index.values.each(&block)
-  end
-
   def self.get(name, email)
     map_name, map_email = $mailmaps[[name, email]] || $mailmaps[[nil, email]] || []
     name, email = [ map_name || name, map_email || email ]
-
-    @@index[email.downcase] ||= Person.new(name, email)
+    $persons[email.downcase] ||= Person.new(name, email)
   end
 
 end
@@ -206,7 +194,7 @@ class Commit
       if not in_body
         case line
         when /^author ([^<>]+) <(\S+)> (.+)$/
-          author = Persons.get($1, $2)
+          author = Person.get($1, $2)
           author.add_role(@id, :author)
         when /^$/
           in_body = true
@@ -214,7 +202,7 @@ class Commit
       else
         role_regex = KNOWN_ROLES.keys.join('|')
         if line =~ /^(#{role_regex}): ([^<>]+) <(\S+?)>$/
-          person = Persons.get($2, $3)
+          person = Person.get($2, $3)
           role = KNOWN_ROLES[$1]
           next if role == :signer and person == author
           person.add_role(@id, role)
@@ -363,9 +351,7 @@ if $show_commits
   exit 0
 end
 
-persons = Persons.new
-
-persons.sort.reverse.each do |person|
+$persons.values.sort.reverse.each do |person|
   percent = person.size.to_f * 100 / commits.size
   next if percent < $min_percent
 
