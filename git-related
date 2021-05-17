@@ -185,13 +185,8 @@ class Persons
   end
 
   def self.get(name, email)
-
-    # fix with mailmap
-    new = $mailmaps[[name, email]] || $mailmaps[[nil, email]]
-    if new
-      name = new[0] if new[0]
-      email = new[1] if new[1]
-    end
+    map_name, map_email = $mailmaps[[name, email]] || $mailmaps[[nil, email]] || []
+    name, email = [ map_name || name, map_email || email ]
 
     id = email.downcase
     person = @@index[id]
