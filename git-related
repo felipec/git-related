@@ -19,23 +19,6 @@ KNOWN_ROLES = {
 }
 KNOWN_ROLES_REGEX = /^(#{KNOWN_ROLES.keys.join('|')}): ([^<>]+) <(\S+?)>$/
 
-if RUBY_VERSION < "2.4"
-  class IO
-    alias old_each each
-    alias old_readlines readlines
-
-    def each(**args)
-      method = args[:chomp] == true ? :chomp : :itself
-      old_each() { |e| yield e.send(method) }
-    end
-
-    def readlines(**args)
-      method = args[:chomp] == true ? :chomp : :itself
-      old_readlines().map { |e| e.send(method) }
-    end
-  end
-end
-
 def get_mailmap(filename)
   return unless File.exists?(filename)
   File.open(filename) do |f|
