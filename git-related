@@ -188,12 +188,7 @@ class Persons
     map_name, map_email = $mailmaps[[name, email]] || $mailmaps[[nil, email]] || []
     name, email = [ map_name || name, map_email || email ]
 
-    id = email.downcase
-    person = @@index[id]
-    if not person
-      person = @@index[id] = Person.new(name, email)
-    end
-    person
+    @@index[email.downcase] ||= Person.new(name, email)
   end
 
 end
