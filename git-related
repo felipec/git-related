@@ -277,8 +277,8 @@ class Commits
         source = $1 != '/dev/null' ? $1[2..-1] : nil
       when /^@@ -(\d+)(?:,(\d+))?/
         next unless source and id
-        next if $2 == 0
-        @sources[[source, id]] << [$1, $2 || 1]
+        next if !$2 || $2 == '0'
+        @sources[[source, id]] << [$1, $2]
       end
     end
   end
