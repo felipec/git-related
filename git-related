@@ -24,12 +24,14 @@ if RUBY_VERSION < "2.4"
     alias old_each each
     alias old_readlines readlines
 
-    def each(*args)
-      old_each() { |e| yield e.chomp }
+    def each(**args)
+      method = args[:chomp] == true ? :chomp : :itself
+      old_each() { |e| yield e.send(method) }
     end
 
-    def readlines(*args)
-      old_readlines().map { |e| e.chomp }
+    def readlines(**args)
+      method = args[:chomp] == true ? :chomp : :itself
+      old_readlines().map { |e| e.send(method) }
     end
   end
 end
