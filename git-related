@@ -266,7 +266,7 @@ class Commits
     end
   end
 
-  def scan_patch(io, patch: false)
+  def scan(io, patch: false)
     id = nil
     source = nil
     io.each do |line|
@@ -297,7 +297,7 @@ class Commits
   def from_patches(files)
     files.each do |file|
       File.open(file) do |f|
-        scan_patch(f, patch: true)
+        scan(f, patch: true)
       end
     end
   end
@@ -314,7 +314,7 @@ class Commits
     end
 
     IO.popen(%w[git log -C --format=%x00%H -p] + args) do |pipe|
-      scan_patch(pipe)
+      scan(pipe)
     end
   end
 
