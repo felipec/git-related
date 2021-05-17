@@ -17,6 +17,7 @@ KNOWN_ROLES = {
   'Acked-by' => :acker,
   'Cc' => :cced,
 }
+KNOWN_ROLES_REGEX = /^(#{KNOWN_ROLES.keys.join('|')}): ([^<>]+) <(\S+?)>$/
 
 if RUBY_VERSION < "2.4"
   class IO
@@ -190,24 +191,16 @@ class Commit
 
   def parse(data)
     in_body = author = nil
-    data.each_line do |line|
-      if not in_body
-        case line
-        when /^author ([^<>]+) <(\S+)> (.+)$/
-          author = Person.get($1, $2)
-          author.add_role(@id, :author)
-        when /^$/
-          in_body = true
-        end
-      else
-        role_regex = KNOWN_ROLES.keys.join('|')
-        if line =~ /^(#{role_regex}): ([^<>]+) <(\S+?)>$/
-          person = Person.get($2, $3)
-          role = KNOWN_ROLES[$1]
-          next if role == :signer and person == author
-          person.add_role(@id, role)
-        end
-      end
+    header, body = data.split("\n\n", 2)
+    if header =~ /^author ([^<>]+) <(\S+)> (.+)$/
+      author = Person.get($1, $2)
+      author.add_role(@id, :author)
+    end
+    body.scan(KNOWN_ROLES_REGEX) do
+      person = Person.get($2, $3)
+      role = KNOWN_ROLES[$1]
+      next if role == :signer and person == author
+      person.add_role(@id, role)
     end
   end
 
