@@ -25,15 +25,9 @@ def get_mailmap(filename)
   e = /<(\S+)>/
   File.foreach(filename) do |line|
     case line.gsub(/\s*#.*$/, '')
-    when /^#{n}\s+#{e}$/
-      $mailmaps[[nil, $2]] = [ $1, nil ]
-    when /^<(\S+)>\s+#{e}$/
-      $mailmaps[[nil, $2]] = [ nil, $1 ]
-    when /^#{n}\s+#{e}\s+#{e}$/
+    when /^(?:#{n})?(?:\s*#{e})?\s+#{e}$/
       $mailmaps[[nil, $3]] = [ $1, $2 ]
-    when /^#{n}\s+#{e}\s+#{n}$/
-      $mailmaps[[$3, nil]] = [ $1, $2 ]
-    when /^#{n}\s+#{e}\s+#{n}\s+#{e}$/
+    when /^#{n}\s+#{e}(?:\s+#{n})?(?:\s+#{e})?$/
       $mailmaps[[$3, $4]] = [ $1, $2 ]
     end
   end
