@@ -177,7 +177,7 @@ class Commit
   def parse(data)
     in_body = author = nil
     header, body = data.split("\n\n", 2)
-    if header =~ /^author ([^<>]+) <(\S+)> (.+)$/
+    if header =~ /^author ([^<>]+) <(\S+)> /
       author = Person.get($1, $2)
       author.add_role(@id, :author)
     end
@@ -249,7 +249,7 @@ class Commits
     source = nil
     io.each do |line|
       case line
-      when /^From (\h{40}) /, /\0(\h{40})$/
+      when /^From (\h{40}) /, /^\0(\h{40})$/
         id = $1
         @main_commits[id] = true
       when /^---\s+(\S+)/
