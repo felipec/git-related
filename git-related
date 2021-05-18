@@ -161,7 +161,12 @@ class Person
   end
 
   def self.get(name, email)
-    map_name, map_email = $mailmaps[[name, email]] || $mailmaps[[nil, email]] || $mailmaps[[name, nil]] || []
+    map = $mailmaps[[name, email]]
+    map ||= $mailmaps[[nil, email]]
+    map ||= $mailmaps[[name, nil]]
+    map ||= []
+
+    map_name, map_email = map
     name, email = [ map_name || name, map_email || email ]
     $persons[email.downcase] ||= Person.new(name, email)
   end
