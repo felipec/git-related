@@ -39,7 +39,6 @@ def get_mailmap(filename)
   end
 end
 
-get_aliases if $get_aliases
 get_mailmap(File.join($base_dir, '.mailmap'))
 mailmap_file = %x[git config mailmap.file].chomp
 get_mailmap(mailmap_file)
