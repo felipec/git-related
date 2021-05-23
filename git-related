@@ -13,9 +13,12 @@ $base_dir = %x[git rev-parse --show-toplevel].chomp
 
 KNOWN_ROLES = {
   'Signed-off-by' => :signer,
-  'Reviewed-by' => :reviewer,
   'Acked-by' => :acker,
-  'Cc' => :cced,
+  'Reviewed-by' => :reviewer,
+  'Helped-by' => :helper,
+  'Mentored-by' => :mentor,
+  'Suggested-by' => :advisor,
+  'Cc' => :observer,
 }
 KNOWN_ROLES_REGEX = /^(#{KNOWN_ROLES.keys.join('|')}): ([^<>]+) <(\S+?)>$/
 
