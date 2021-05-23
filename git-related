@@ -335,7 +335,7 @@ $persons.values.sort.reverse.each do |person|
   percent = person.size.to_f * 100 / commits.size
   next if percent < $min_percent
 
-  roles = person.roles.map do |role, role_count|
+  roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
     role_percent = role_count.to_f * 100 / commits.size
     '%s: %u%%' % [role, role_percent]
   end
