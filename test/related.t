@@ -47,7 +47,7 @@ test_expect_success "others" "
 	git related patch | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (author: 33%)
-	John Poppins <john@doe.com> (author: 66%)
+	John Poppins <john@doe.com> (author: 67%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
@@ -58,7 +58,7 @@ test_expect_success "multiple patches" "
 	git format-patch --stdout -1 feature~ > patch2 &&
 	git related patch1 patch2 | sort > actual &&
 	cat > expected <<-EOF &&
-	John Poppins <john@doe.com> (author: 66%)
+	John Poppins <john@doe.com> (author: 67%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%, author: 33%)
 	EOF
 	test_cmp expected actual
@@ -68,7 +68,7 @@ test_expect_success "from revision range" "
 	git related master..feature | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (author: 33%)
-	John Poppins <john@doe.com> (author: 66%)
+	John Poppins <john@doe.com> (author: 67%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
@@ -78,7 +78,7 @@ test_expect_success "from single revision" "
 	git related master | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (author: 33%)
-	John Poppins <john@doe.com> (author: 66%)
+	John Poppins <john@doe.com> (author: 67%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
@@ -88,7 +88,7 @@ test_expect_success "no arguments" "
 	git related | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (author: 33%)
-	John Poppins <john@doe.com> (author: 66%)
+	John Poppins <john@doe.com> (author: 67%)
 	Jon Stewart <jon@stewart.com> (reviewer: 33%)
 	EOF
 	test_cmp expected actual
