@@ -340,9 +340,10 @@ $persons.values.sort.reverse.each do |person|
 
   roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
     role_percent = (role_count.to_f * 100 / commits.size).round
+    next if role_percent == 0
     '%s: %i%%' % [role, role_percent]
   end
 
   format = STDOUT.isatty ? "%s \e[1;34m(%s)\e[0m" : '%s (%s)'
-  puts format % [person, roles.join(', ')]
+  puts format % [person, roles.compact.join(', ')]
 end
