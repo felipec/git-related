@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/bin/env ruby
 
 require 'optparse'
 
@@ -84,12 +84,12 @@ class Person
     @roles[role] += 1
   end
 
-  def <=>(b)
-    self.size <=> b.size
-  end
-
   def size
     @commits.size
+  end
+
+  def <=>(b)
+    size <=> b.size
   end
 
   def to_s
@@ -275,14 +275,14 @@ if $show_commits
 end
 
 $persons.values.sort.reverse.each do |person|
-  percent = person.size.to_f * 100 / commits.size
+  percent = 100 * person.size.to_f / commits.size
   next if percent < $min_percent
 
   unless $roles
     summary = '%i%%' % percent.round
   else
     roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
-      role_percent = (role_count.to_f * 100 / commits.size).round
+      role_percent = (100 * role_count.to_f / commits.size).round
       next if role_percent == 0
       '%s: %i%%' % [role, role_percent]
     end
