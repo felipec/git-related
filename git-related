@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
+
 $since = '5-years-ago'
 $min_percent = 10
 $files = []
@@ -41,98 +43,30 @@ get_mailmap(File.join($base_dir, '.mailmap'))
 mailmap_file = %x[git config mailmap.file].chomp
 get_mailmap(mailmap_file)
 
-class ParseOpt
-  attr_writer :usage
+opts = OptionParser.new
+opts.banner = 'git related [options] <files | rev-list options>'
 
-  class Option
-    attr_reader :short, :long, :help
-
-    def initialize(short, long, help, &block)
-      @block = block
-      @short = short
-      @long = long
-      @help = help
-    end
-
-    def call(v)
-      @block.call(v)
-    end
-  end
-
-  def initialize
-    @list = {}
-  end
-
-  def on(short = nil, long = nil, help = nil, &block)
-    opt = Option.new(short, long, help, &block)
-    @list[short] = opt if short
-    @list[long] = opt if long
-  end
-
-  def parse
-    if ARGV.member?('-h') or ARGV.member?('--help')
-      usage
-      exit 0
-    end
-    seen_dash = false
-    ARGV.delete_if do |cur|
-      opt = val = nil
-      next false if cur[0,1] != '-' or seen_dash
-      case cur
-      when '--'
-        seen_dash = true
-        next true
-      when /^--no-(.+)$/
-        opt = @list[$1]
-        val = false
-      when /^-([^-])(.+)?$/, /^--(.+?)(?:=(.+))?$/
-        opt = @list[$1]
-        val = $2 || true
-      end
-      if opt
-        opt.call(val)
-        true
-      end
-    end
-  end
-
-  def usage
-    def fmt(prefix, str)
-      return str ? prefix + str : nil
-    end
-    puts 'usage: %s' % @usage
-    @list.values.uniq.each do |opt|
-      s = '    '
-      s << ''
-      s << [fmt('-', opt.short), fmt('--', opt.long)].compact.join(', ')
-      s << ''
-      s << '%*s%s' % [26 - s.size, '', opt.help] if opt.help
-      puts s
-    end
-  end
-
-end
-
-opts = ParseOpt.new
-opts.usage = 'git related [options] <files | rev-list options>'
-
-opts.on('p', 'min-percent', 'Minium percentage of role participation') do |v|
+opts.on('-pN', '--min-percent=N', 'Minium percentage of role participation') do |v|
   $min_percent = v.to_i
 end
 
-opts.on('d', 'since', 'How far back to search for relevant commits') do |v|
+opts.on('-d DATE', '--since=DATE', 'How far back to search for relevant commits') do |v|
   $since = v
 end
 
-opts.on('c', 'commits', 'List commits instead of persons') do |v|
+opts.on('-cTYPE', '--commits=TYPE', 'List commits instead of persons') do |v|
   $show_commits = v
 end
 
-opts.on('r', 'roles', 'Display specific roles') do |v|
+opts.on('-r', '--roles', 'Display specific roles') do |v|
   $roles = v
 end
 
-opts.parse
+begin
+  opts.parse!
+rescue OptionParser::InvalidOption => e
+  e.recover(ARGV)
+end
 
 class Person
 
