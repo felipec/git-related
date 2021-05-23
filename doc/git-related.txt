@@ -57,6 +57,10 @@ OPTIONS
 	List commits instead of persons. Possible values are
 	'long', 'full', 'raw', 'oneline'. (default: oneline)
 
+-r::
+--roles::
+  Show specific roles in the output (singer, reviewer, helper, etc.).
+
 EXAMPLES
 --------
 

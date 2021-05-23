@@ -5,6 +5,7 @@ $min_percent = 10
 $files = []
 $rev_args = []
 $show_commits = false
+$roles = false
 
 $persons = {}
 $mailmaps = {}
@@ -127,6 +128,10 @@ opts.on('c', 'commits', 'List commits instead of persons') do |v|
   $show_commits = v
 end
 
+opts.on('r', 'roles', 'Display specific roles') do |v|
+  $roles = v
+end
+
 opts.parse
 
 class Person
@@ -184,6 +189,7 @@ class Commit
       author = Person.get($1, $2)
       author.add_role(@id, :author)
     end
+    return unless $roles
     body.scan(KNOWN_ROLES_REGEX) do
       person = Person.get($2, $3)
       role = KNOWN_ROLES[$1]
@@ -338,12 +344,17 @@ $persons.values.sort.reverse.each do |person|
   percent = person.size.to_f * 100 / commits.size
   next if percent < $min_percent
 
-  roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
-    role_percent = (role_count.to_f * 100 / commits.size).round
-    next if role_percent == 0
-    '%s: %i%%' % [role, role_percent]
+  unless $roles
+    summary = '%i%%' % percent.round
+  else
+    roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
+      role_percent = (role_count.to_f * 100 / commits.size).round
+      next if role_percent == 0
+      '%s: %i%%' % [role, role_percent]
+    end
+    summary = roles.compact.join(', ')
   end
 
   format = STDOUT.isatty ? "%s \e[1;34m(%s)\e[0m" : '%s (%s)'
-  puts format % [person, roles.compact.join(', ')]
+  puts format % [person, summary]
 end
