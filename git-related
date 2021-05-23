@@ -84,12 +84,12 @@ class Person
     @roles[role] += 1
   end
 
-  def size
+  def weight
     @commits.size
   end
 
   def <=>(b)
-    size <=> b.size
+    weight <=> b.weight
   end
 
   def to_s
@@ -275,7 +275,7 @@ if $show_commits
 end
 
 $persons.values.sort.reverse.each do |person|
-  percent = 100 * person.size.to_f / commits.size
+  percent = 100 * person.weight.to_f / commits.size
   next if percent < $min_percent
 
   unless $roles
