@@ -50,6 +50,10 @@ to use `git related` to find relevant people that should be Cc'ed:
 
 == Installation ==
 
-Simply copy the script anywhere in your '$PATH' and make it
+Install the `parseopt` gem:
+
+  gem install parseopt
+
+Then simply copy the script anywhere in your '$PATH' and make it
 executable, or run `make install` which will install it by default to
 your '~/bin/' directory (make sure it's in your '$PATH').
