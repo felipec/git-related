@@ -1,5 +1,8 @@
 language: ruby
 
+install:
+  - gem install parseopt
+
 script:
   - make test
 
