@@ -14,16 +14,16 @@ $mailmaps = {}
 
 $base_dir = %x[git rev-parse --show-toplevel].chomp
 
-KNOWN_ROLES = {
-  'Signed-off-by' => :signer,
-  'Acked-by' => :acker,
-  'Reviewed-by' => :reviewer,
-  'Helped-by' => :helper,
-  'Mentored-by' => :mentor,
-  'Suggested-by' => :advisor,
-  'Cc' => :observer,
+ROLE_MAP = {
+  'signed-off-by' => :signer,
+  'acked-by' => :acker,
+  'reviewed-by' => :reviewer,
+  'helped-by' => :helper,
+  'mentored-by' => :mentor,
+  'suggested-by' => :advisor,
+  'cc' => :observer,
 }
-KNOWN_ROLES_REGEX = /^(#{KNOWN_ROLES.keys.join('|')}): ([^<>]+) <(\S+?)>$/
+ROLE_REGEX = /^([^ \t\n\[\]\(\):]+): ([^<>]+) <(\S+?)>$/
 
 def get_mailmap(filename)
   return unless File.exists?(filename)
@@ -121,9 +121,9 @@ class Commit
     end
     return unless $roles
     trailer = body.split("\n\n").last
-    trailer.scan(KNOWN_ROLES_REGEX) do
+    trailer.scan(ROLE_REGEX) do
       person = Person.get($2, $3)
-      role = KNOWN_ROLES[$1]
+      role = ROLE_MAP[$1.downcase]
       next if role == :signer and person == author
       person.add_role(@id, role)
     end
