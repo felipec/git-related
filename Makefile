@@ -10,10 +10,7 @@ doc: doc/git-related.1 doc/git-who.1
 test:
 	$(MAKE) -C test
 
-doc/git-related.1: doc/git-related.txt
-	asciidoctor -b manpage $<
-
-doc/git-who.1: doc/git-who.txt
+%.1: %.txt
 	asciidoctor -b manpage $<
 
 clean:
