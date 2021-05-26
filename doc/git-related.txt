@@ -37,19 +37,19 @@ Junio C Hamano <xx@gmail.com> (signer: 90%, author: 5%)
 Felipe Contreras <xx@gmail.com> (author: 25%, reviewer: 2%)
 Sverre Rabbelier <xx@gmail.com> (author: 17%, acker: 2%, signer: 7%)
 Jeff King <xx@gmail.com> (acker: 17%, author: 10%)
-Shawn O. Pearce <xx@gmail.com> (author: 5%, signer: 2%, cced: 2%)
+Shawn O. Pearce <xx@gmail.com> (author: 5%, signer: 2%, observer: 2%)
 Elijah Newren <xx@gmail.com> (author: 10%)
 --------
 
 OPTIONS
 -------
 
--t::
---threshold::
+-t<number>::
+--threshold=<number>::
 	Threshold of role participation (default: 10)
 
--s::
---since=<since>::
+-s<date>::
+--since=<date>::
 	How far back to search for relevant commits (default: 5-years-ago).
 
 -c::

@@ -1,4 +1,4 @@
-= git-related =
+== git-related ==
 
 This tool finds people that might be interested in a patch, by going
 back through the history for each single hunk modified, and finding
@@ -15,12 +15,12 @@ a minimum threshold of participation.
 For example:
 
 ------------
-% git related master..fc/transport/improv
+% git related --roles master..fc/transport/improv
   Junio C Hamano <gitster@pobox.com> (signer: 90%, author: 5%)
   Felipe Contreras <felipe.contreras@gmail.com> (author: 25%, reviewer: 2%)
   Sverre Rabbelier <srabbelier@gmail.com> (author: 17%, acker: 2%, signer: 7%)
   Jeff King <peff@peff.net> (acker: 17%, author: 10%)
-  Shawn O. Pearce <spearce@spearce.org> (author: 5%, signer: 2%, cced: 2%)
+  Shawn O. Pearce <spearce@spearce.org> (author: 5%, signer: 2%, observer: 2%)
   Elijah Newren <newren@gmail.com> (author: 10%)
 ------------
 
