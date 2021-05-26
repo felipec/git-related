@@ -120,7 +120,8 @@ class Commit
       author.add_role(@id, :author)
     end
     return unless $roles
-    body.scan(KNOWN_ROLES_REGEX) do
+    trailer = body.split("\n\n").last
+    trailer.scan(KNOWN_ROLES_REGEX) do
       person = Person.get($2, $3)
       role = KNOWN_ROLES[$1]
       next if role == :signer and person == author
