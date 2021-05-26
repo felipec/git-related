@@ -1,0 +1,50 @@
+git-who(1)
+==========
+
+NAME
+----
+git-who - Gather people who worked on commits
+
+SYNOPSIS
+--------
+[verse]
+'git who' [<options>] [<revision range>] [[--] <path>...]
+
+DESCRIPTION
+-----------
+
+This tool gathers all the people that worked on a list of commits and summarizes
+them nicely.
+
+By default it only gathers authors, but it can inspect commit trailer lines to
+find many more roles, such as reviewers and helpers.
+
+OUTPUT
+------
+
+The default output lists the person of interest and the involvement they had in
+all the commits: author, reviewer, signer, etc.
+
+--------
+Junio C Hamano <xx@gmail.com> (signer: 90%, author: 5%)
+Felipe Contreras <xx@gmail.com> (author: 25%, reviewer: 2%)
+Sverre Rabbelier <xx@gmail.com> (author: 17%, acker: 2%, signer: 7%)
+Jeff King <xx@gmail.com> (acker: 17%, author: 10%)
+Shawn O. Pearce <xx@gmail.com> (author: 5%, signer: 2%, observer: 2%)
+Elijah Newren <xx@gmail.com> (author: 10%)
+--------
+
+OPTIONS
+-------
+
+-t<number>::
+--threshold=<number>::
+	Threshold of role participation (default: 5)
+
+-s<date>::
+--since=<date>::
+	How far back to search for relevant commits (default: 5-years-ago).
+
+-r::
+--roles::
+  Show specific roles in the output (singer, reviewer, helper, etc.).

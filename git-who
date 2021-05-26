@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+
+require 'parseopt'
+
+$since = '5-years-ago'
+$threshold = 5
+$roles = false
+
+$base_dir = %x[git rev-parse --show-toplevel].chomp
+
+ROLE_MAP = {
+  'signed-off-by' => :signer,
+  'acked-by' => :acker,
+  'reviewed-by' => :reviewer,
+  'helped-by' => :helper,
+  'mentored-by' => :mentor,
+  'suggested-by' => :advisor,
+  'cc' => :observer,
+  'noticed-by' => :sentry,
+  'tested-by' => :tester,
+  'improved-by' => :enhancer,
+  'thanks-to' => :helper,
+  'based-on-patch-by' => :patcher,
+  'based-on-a-patch-by' => :patcher,
+  'contributions-by' => :contributor,
+  'co-authored-by' => :coauthor,
+  'requested-by' => :solicitor,
+  'original-patch-by ' => :patcher,
+}
+ROLE_REGEX = /^([^ \t\n\[\]\(\):]+): ([^<>]+) <(\S+?)>$/
+
+opts = ParseOpt.new
+opts.usage = 'git related [options] <files | rev-list options>'
+
+opts.on('t', 'threshold', 'Minimum percentage threshold of participation') do |v|
+  $threshold = v.to_i
+end
+
+opts.on('s', 'since', 'How far back to search') do |v|
+  $since = v
+end
+
+opts.on('r', 'roles', 'Display specific roles') do |v|
+  $roles = v
+end
+
+opts.parse
+
+class Person
+
+  attr_reader :roles
+
+  def initialize(name, email)
+    @name = name
+    @email = email
+    @roles = Hash.new(0)
+  end
+
+  def add_role(role)
+    @roles[role] += 1
+  end
+
+  def weight
+    @roles.values.sum
+  end
+
+  def <=>(b)
+    weight <=> b.weight
+  end
+
+  def to_s
+    '%s <%s>' % [@name, @email]
+  end
+
+  def self.get(name, email)
+    $persons[email.downcase] ||= Person.new(name, email)
+  end
+
+end
+
+$persons = {}
+$commits = 0
+
+log_args = [ '--no-merges', '--find-copies-harder', '--format=%aN%n%aE%n%b%x00', '--since', $since ]
+IO.popen(%w[git log] + log_args + ARGV) do |pipe|
+  pipe.each("\0\n") do |commit|
+    name, email, body = commit.scrub.split("\n", 3)
+    author = Person.get(name, email)
+    author.add_role(:author)
+    $commits += 1
+    next unless $roles
+    trailer = body.split("\n\n").last
+    trailer.scan(ROLE_REGEX) do
+      person = Person.get($2, $3)
+      role = ROLE_MAP[$1.downcase]
+      next if role == :signer and person == author
+      person.add_role(role)
+    end
+  end
+end
+
+$persons.values.sort.reverse.each do |person|
+  percent = 100 * person.weight.to_f / $commits
+  next if percent < $threshold
+
+  unless $roles
+    summary = '%i%%' % percent.round
+  else
+    roles = person.roles.sort_by(&:last).reverse.map do |role, role_count|
+      role_percent = (100 * role_count.to_f / $commits).round
+      next if role_percent == 0
+      '%s: %i%%' % [role, role_percent]
+    end
+    summary = roles.compact.join(', ')
+  end
+
+  format = STDOUT.isatty ? "%s \e[1;34m(%s)\e[0m" : '%s (%s)'
+  puts format % [person, summary]
+end

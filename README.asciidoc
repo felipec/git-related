@@ -48,6 +48,16 @@ to use `git related` to find relevant people that should be Cc'ed:
 % git send-email --cc-cmd='git related' *.patch
 ------------
 
+== git-who ==
+
+A very similar tool but it gathers all commits, not just the ones related to a
+branch.
+
+You can specify a file, directory, or pathspec, just like with `git log`.
+
+If nothing is specified, it lists all the people that have had a role in the
+whole repository.
+
 == Installation ==
 
 Install the `parseopt` gem:
