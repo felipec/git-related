@@ -22,6 +22,16 @@ ROLE_MAP = {
   'mentored-by' => :mentor,
   'suggested-by' => :advisor,
   'cc' => :observer,
+  'noticed-by' => :sentry,
+  'tested-by' => :tester,
+  'improved-by' => :enhancer,
+  'thanks-to' => :helper,
+  'based-on-patch-by' => :patcher,
+  'based-on-a-patch-by' => :patcher,
+  'contributions-by' => :contributor,
+  'co-authored-by' => :coauthor,
+  'requested-by' => :solicitor,
+  'original-patch-by ' => :patcher,
 }
 ROLE_REGEX = /^([^ \t\n\[\]\(\):]+): ([^<>]+) <(\S+?)>$/
 
