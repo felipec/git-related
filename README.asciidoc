@@ -29,7 +29,7 @@ contributors, which allows you to easily find out the previous changes to the
 lines your patches modify.
 
 ------------
-% git related -c master..fc/transport/improv
+% git related --commits master..fc/transport/improv
   99d9ec0 Merge branch 'fc/transport-helper-no-refspec'
   67c9c78 transport-helper: barf when user tries old:new
   0460ed2 documentation: trivial style cleanups
@@ -56,7 +56,11 @@ branch.
 You can specify a file, directory, or pathspec, just like with `git log`.
 
 If nothing is specified, it lists all the people that have had a role in the
-whole repository.
+whole tree.
+
+------------
+% git who -- lib/
+------------
 
 == Installation ==
 
