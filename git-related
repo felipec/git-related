@@ -58,7 +58,7 @@ get_mailmap(mailmap_file)
 opts = ParseOpt.new
 opts.usage = 'git related [options] <files | rev-list options>'
 
-opts.on('t', 'threshold', 'Threshold of role participation') do |v|
+opts.on('t', 'threshold', 'Minimum percentage threshold of participation') do |v|
   $threshold = v.to_i
 end
 
