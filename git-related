@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
+require 'parseopt'
 
 $since = '5-years-ago'
 $min_percent = 10
@@ -43,30 +43,26 @@ get_mailmap(File.join($base_dir, '.mailmap'))
 mailmap_file = %x[git config mailmap.file].chomp
 get_mailmap(mailmap_file)
 
-opts = OptionParser.new
-opts.banner = 'git related [options] <files | rev-list options>'
+opts = ParseOpt.new
+opts.usage = 'git related [options] <files | rev-list options>'
 
-opts.on('-pN', '--min-percent=N', 'Minium percentage of role participation') do |v|
+opts.on('p', 'min-percent', 'Minium percentage of role participation') do |v|
   $min_percent = v.to_i
 end
 
-opts.on('-d DATE', '--since=DATE', 'How far back to search for relevant commits') do |v|
+opts.on('d', 'since', 'How far back to search for relevant commits') do |v|
   $since = v
 end
 
-opts.on('-cTYPE', '--commits=TYPE', 'List commits instead of persons') do |v|
+opts.on('c', 'commits', 'List commits instead of persons') do |v|
   $show_commits = v
 end
 
-opts.on('-r', '--roles', 'Display specific roles') do |v|
+opts.on('r', 'roles', 'Display specific roles') do |v|
   $roles = v
 end
 
-begin
-  opts.parse!
-rescue OptionParser::InvalidOption => e
-  e.recover(ARGV)
-end
+opts.parse
 
 class Person
 
