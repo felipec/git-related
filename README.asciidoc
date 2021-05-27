@@ -7,9 +7,9 @@ patch is modifying.
 
 It does this by running `git blame` incrementally on each hunk, and
 finding the relevant commit message. After gathering all the relevant
-people, it groups them to show what exactly was their role when the
+people, it groups them to show what exactly was their role when they
 participated in the development of the relevant commit, and on how many
-relevant commits they participated. They are only displayed if they pass
+relevant commits they participated in. They are only displayed if they pass
 a minimum threshold of participation.
 
 For example:
@@ -42,7 +42,7 @@ lines your patches modify.
 ------------
 
 Moreover, when sending patches for review, you can configure `git send-email`
-to use `git related` to find relevant people that should be Cc'ed:
+to use `git related` to find relevant people that should be cc'ed:
 
 ------------
 % git send-email --cc-cmd='git related' *.patch
@@ -68,6 +68,6 @@ Install the `parseopt` gem:
 
   gem install parseopt
 
-Then simply copy the script anywhere in your '$PATH' and make it
+Then simply copy the script anywhere in your `$PATH` and make it
 executable, or run `make install` which will install it by default to
-your '~/bin/' directory (make sure it's in your '$PATH').
+your `~/bin/` directory (make sure it's in your `$PATH`).
