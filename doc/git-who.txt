@@ -47,4 +47,4 @@ OPTIONS
 
 -r::
 --roles::
-  Show specific roles in the output (singer, reviewer, helper, etc.).
+  Show specific roles in the output (signer, reviewer, helper, etc.).
