@@ -208,7 +208,7 @@ class Commits
       when /^From (\h{40}) /, /^\0(\h{40})$/
         id = $1
         @main_commits[id] = true
-      when /^---\s+(\S+)/
+      when /^---\s+(\S+)$/
         source = $1 != '/dev/null' ? $1[2..-1] : nil
       when /^@@ -(\d+)(?:,(\d+))?/
         next unless source and id
