@@ -8,22 +8,17 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.5', '2.6', '2.7', '3.0', '3.1']
-
+        ruby: [ '2.5', '2.6', '2.7', '3.0', '3.1' ]
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby-version }}
-
+        ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: gem install parseopt
-
     - name: Run tests
       run: make test
