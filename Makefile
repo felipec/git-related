@@ -8,7 +8,7 @@ all:
 doc: doc/git-related.1 doc/git-who.1
 
 test:
-	$(MAKE) -C test
+	$(MAKE) -C t
 
 %.1: %.txt
 	asciidoctor -b manpage $<
