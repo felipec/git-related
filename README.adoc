@@ -12,7 +12,7 @@ For example:
 
 [,sh]
 ----
-% git related master..fc/transport/improv
+% git related master..topic
   Felipe Contreras <felipe.contreras@gmail.com> (25%)
   Sverre Rabbelier <srabbelier@gmail.com> (17%)
   Elijah Newren <newren@gmail.com> (10%)
@@ -27,7 +27,7 @@ For example:
 
 [,sh]
 ----
-% git related --roles master..fc/transport/improv
+% git related --roles master..topic
   Junio C Hamano <gitster@pobox.com> (signer: 90%, author: 5%)
   Felipe Contreras <felipe.contreras@gmail.com> (author: 25%, reviewer: 2%)
   Sverre Rabbelier <srabbelier@gmail.com> (author: 17%, acker: 2%, signer: 7%)
@@ -42,7 +42,7 @@ lines your patches modify.
 
 [,sh]
 ----
-% git related --commits master..fc/transport/improv
+% git related --commits master..topic
   99d9ec0 Merge branch 'fc/transport-helper-no-refspec'
   67c9c78 transport-helper: barf when user tries old:new
   0460ed2 documentation: trivial style cleanups
@@ -54,7 +54,7 @@ lines your patches modify.
   ...
 ----
 
-Moreover, when sending patches for review, you can configure `git send-email`
+Plus, when sending patches for review, you can configure `git send-email`
 to use `git related` to find relevant people that should be cc'ed:
 
 [,sh]
