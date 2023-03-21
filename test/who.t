@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test_description="Test git who"
+test_description='Test git who'
 
 . ./test-lib.sh
 
@@ -33,7 +33,7 @@ setup () {
 
 setup
 
-test_expect_success "basic" "
+test_expect_success 'basic' '
 	git who | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (17%)
@@ -43,9 +43,9 @@ test_expect_success "basic" "
 	Pablo Escobar <pablo@escobar.com> (17%)
 	EOF
 	test_cmp expected actual
-"
+'
 
-test_expect_success "roles" "
+test_expect_success 'roles' '
 	git who --roles | sort > actual &&
 	cat > expected <<-EOF &&
 	John Poppins <john.poppings@google.com> (author: 17%)
@@ -55,6 +55,6 @@ test_expect_success "roles" "
 	Pablo Escobar <pablo@escobar.com> (author: 17%)
 	EOF
 	test_cmp expected actual
-"
+'
 
 test_done
