@@ -35,3 +35,12 @@ setup () {
 	git commit -q -a -m six --author='Octavio Paz <octavio.paz@gmail.com>' &&
 	git checkout -q -
 }
+
+test_cmp() {
+	${TEST_CMP:-diff -u} "$@"
+}
+
+test_when_finished() {
+	test_cleanup="{ $*
+		} && (exit \"\$eval_ret\"); eval_ret=\$?; $test_cleanup"
+}
