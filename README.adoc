@@ -10,21 +10,23 @@ are only displayed if they pass a minimum threshold of participation.
 
 For example:
 
-------------
+[,sh]
+----
 % git related master..fc/transport/improv
-Felipe Contreras <felipe.contreras@gmail.com> (25%)
-Sverre Rabbelier <srabbelier@gmail.com> (17%)
-Elijah Newren <newren@gmail.com> (10%)
-Jeff King <peff@peff.net> (10%)
-Shawn O. Pearce <spearce@spearce.org> (5%)
-------------
+  Felipe Contreras <felipe.contreras@gmail.com> (25%)
+  Sverre Rabbelier <srabbelier@gmail.com> (17%)
+  Elijah Newren <newren@gmail.com> (10%)
+  Jeff King <peff@peff.net> (10%)
+  Shawn O. Pearce <spearce@spearce.org> (5%)
+----
 
 Additionally, it's able to parse commit trailers (e.g. `Signed-off-by`,
 `Reviewed-by`), and group the roles of each person.
 
 For example:
 
-------------
+[,sh]
+----
 % git related --roles master..fc/transport/improv
   Junio C Hamano <gitster@pobox.com> (signer: 90%, author: 5%)
   Felipe Contreras <felipe.contreras@gmail.com> (author: 25%, reviewer: 2%)
@@ -32,13 +34,14 @@ For example:
   Jeff King <peff@peff.net> (acker: 17%, author: 10%)
   Shawn O. Pearce <spearce@spearce.org> (author: 5%, signer: 2%, observer: 2%)
   Elijah Newren <newren@gmail.com> (author: 10%)
-------------
+----
 
 Moreover, it has an option to output the list of commits, instead of the
 contributors, which allows you to easily find out the previous changes to the
 lines your patches modify.
 
-------------
+[,sh]
+----
 % git related --commits master..fc/transport/improv
   99d9ec0 Merge branch 'fc/transport-helper-no-refspec'
   67c9c78 transport-helper: barf when user tries old:new
@@ -49,14 +52,15 @@ lines your patches modify.
   664059f transport-helper: update remote helper namespace
   c4458ec fast-export: Allow pruned-references in mark file
   ...
-------------
+----
 
 Moreover, when sending patches for review, you can configure `git send-email`
 to use `git related` to find relevant people that should be cc'ed:
 
-------------
+[,sh]
+----
 % git send-email --cc-cmd='git related' *.patch
-------------
+----
 
 == git-who ==
 
@@ -68,15 +72,19 @@ You can specify a file, directory, or pathspec, just like with `git log`.
 If nothing is specified, it lists all the people that have had a role in the
 whole tree.
 
-------------
+[,sh]
+----
 % git who -- lib/
-------------
+----
 
 == Installation ==
 
 Install the `parseopt` gem:
 
-  gem install parseopt
+[,sh]
+----
+% gem install parseopt
+----
 
 Then simply copy the script anywhere in your `$PATH` and make it
 executable, or run `make install` which will install it by default to
