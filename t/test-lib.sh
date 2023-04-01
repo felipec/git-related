@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. $(dirname $0)/sharness.sh
+. "$(dirname "$0")"/sharness.sh
 
 GIT_AUTHOR_EMAIL=author@example.com
 GIT_AUTHOR_NAME='A U Thor'
