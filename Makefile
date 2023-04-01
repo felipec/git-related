@@ -28,4 +28,4 @@ install-doc: doc
 	install -m 644 doc/git-related.1 $(D)$(mandir)/git-related.1
 	install -m 644 doc/git-who.1 $(D)$(mandir)/git-who.1
 
-.PHONY: all test install install-doc clean
+.PHONY: all doc test install install-doc clean
