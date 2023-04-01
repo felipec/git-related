@@ -8,7 +8,16 @@ cat > "$HOME/.gitconfig" <<-EOF
 	email = author@example.com
 EOF
 
-setup () {
+test_cmp() {
+	${TEST_CMP:-diff -u} "$@"
+}
+
+test_when_finished() {
+	test_cleanup="{ $*
+		} && (exit \"\$eval_ret\"); eval_ret=\$?; $test_cleanup"
+}
+
+setup() {
 	git init -q &&
 	echo one > content &&
 	git add content &&
@@ -33,13 +42,4 @@ setup () {
 	echo six >> content &&
 	git commit -q -a -m six --author='Octavio Paz <octavio.paz@gmail.com>' &&
 	git checkout -q -
-}
-
-test_cmp() {
-	${TEST_CMP:-diff -u} "$@"
-}
-
-test_when_finished() {
-	test_cleanup="{ $*
-		} && (exit \"\$eval_ret\"); eval_ret=\$?; $test_cleanup"
 }
